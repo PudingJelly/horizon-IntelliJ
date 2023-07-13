@@ -48,6 +48,11 @@ dependencies {
 
 	// 파일 업로드 라이브러리
 	implementation 'commons-io:commons-io:2.8.0'
+
+	//stellarium
+	implementation 'org.ini4j:0.8.2'
+	implementation 'org.stellarium:0.8.2'
+
 }
 
 tasks.named('test') {
