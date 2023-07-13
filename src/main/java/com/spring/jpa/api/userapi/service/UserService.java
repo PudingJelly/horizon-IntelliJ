@@ -10,6 +10,8 @@ import com.spring.jpa.api.userapi.repository.UserRepository;
 import com.spring.jpa.auth.TokenProvider;
 import com.spring.jpa.auth.TokenUserInfo;
 import com.spring.jpa.aws.S3Service;
+import com.spring.jpa.utils.exception.DuplicatedEmailException;
+import com.spring.jpa.utils.exception.NoRegisteredArgumentsException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

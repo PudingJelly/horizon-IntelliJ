@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Builder
 
 @Entity
-@Table(name = "tbl_user")
+@Table(name = "user") //테이블 명 검수 부탁드립니다.
 public class User {
 
     @Id
