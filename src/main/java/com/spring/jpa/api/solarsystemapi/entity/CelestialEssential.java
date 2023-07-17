@@ -27,14 +27,14 @@ public class CelestialEssential {
     private boolean earthLike; //지구형 행성(수금지화), 목성형 행성(목토천해)
 
     @Column(nullable = false)
-    private int diameter; //행성 평균 지름(Km)
+    private double diameter; //행성 평균 지름(Km)
 
     @Column(nullable = false)
-    private int surface; //행성 표면적(km^2)
+    private double surface; //행성 표면적(km^2)
 
     @Column(nullable = false)
-    private int mass; //행성 질량
+    private double mass; //행성 질량
 
     @Column(nullable = false)
-    private int rotation; //행성 자전 주기
+    private double rotation; //행성 자전 주기
 }
