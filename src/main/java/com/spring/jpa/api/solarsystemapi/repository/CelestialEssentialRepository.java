@@ -12,9 +12,9 @@ public interface CelestialEssentialRepository
 
     // 특정 천체의 정보를 가져오는 기능
     // SELECT * FROM tbl_todo WHERE user_id = ?
-    @Query("SELECT ce FROM CelestialEssential ce WHERE ce.celestialNumber = :celestialNumber")
-    List<CelestialEssential>
-        findAllByName(@Param("celestialNumber") CelestialEssential ce);
+//    @Query("SELECT ce FROM CelestialEssential ce WHERE ce.celestialNumber = :celestialNumber")
+//    List<CelestialEssential>
+//        findAllByName(@Param("celestialNumber") CelestialEssential ce);
 
 
 

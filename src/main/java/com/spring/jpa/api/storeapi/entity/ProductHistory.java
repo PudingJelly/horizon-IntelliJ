@@ -1,16 +1,28 @@
 package com.spring.jpa.api.storeapi.entity;
 
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.time.LocalDateTime;
 
-@Getter @Setter @ToString //(exclude = "members")
+@Getter @Setter @ToString
 @EqualsAndHashCode
+@Builder
 @NoArgsConstructor @AllArgsConstructor
-@Builder @Entity
-@Table(name = "product_history")
+@Entity
+@Table(name="shop_history")
 public class ProductHistory {
-    //구매내역
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "basket_id")
+    private Long id;
+
+    private String productName;
+    private int inventoryCount;
+
+    @CreationTimestamp
+    private LocalDateTime buyDate;
 
 }

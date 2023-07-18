@@ -4,25 +4,20 @@ import lombok.*;
 
 import javax.persistence.*;
 
-@Getter @Setter @ToString //(exclude = "team")
+@Getter @Setter @ToString
 @EqualsAndHashCode
+@Builder
 @NoArgsConstructor @AllArgsConstructor
-@Builder @Entity
-@Table(name = "basket")
+@Entity
+@Table(name = "shop_basket")
 public class Basket {
 
-
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "product_id")
-    private Long pId; //장바구니 번호 - 랜더링 순서
+    @Column(name = "user_email")
+    private String email;
 
-    @Column(name = "basket_id")
-    private String productName; //장바구니에 담긴물품
-    private int count; // 물품이 담긴 숫자
-
-
+    @Column(name ="user_name")
+    private String name;
 
 
 }
