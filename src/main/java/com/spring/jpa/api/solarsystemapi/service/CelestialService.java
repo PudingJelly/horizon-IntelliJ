@@ -12,8 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional
 public class CelestialService {
-    private static final CelestialEssentialRepository ceRepository;
-    private static final CelestialOptionalRepository coRepository;
+//    private static final CelestialEssentialRepository ceRepository;
+//    private static final CelestialOptionalRepository coRepository;
 
 
 

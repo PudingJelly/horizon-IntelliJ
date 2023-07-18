@@ -4,16 +4,25 @@ import lombok.*;
 
 import javax.persistence.*;
 
-@Getter @Setter @ToString //(exclude = "team")
+@Setter @Getter @ToString(exclude = "email")
 @EqualsAndHashCode
 @NoArgsConstructor @AllArgsConstructor
-@Builder @Entity
-@Table(name = "product")
+@Builder
+@Entity
+@Table(name = "shop_product")
 public class Product {
 
-    //고유번호, 제품이름, 재고갯수, 제품설명
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "product_id")
+    private Long id; // 물품 고유 아이디 (숫자)
+
+    private String productName; // 물품 이름
+    private String productContent; // 물품 설명
+    private int inventoryCount; // 물품 개수
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "basket")
-    private Basket basket;
+    @JoinColumn(name = "user_email")
+    private Basket email; // 장바구니와 조인할 컬럼
+
 }
