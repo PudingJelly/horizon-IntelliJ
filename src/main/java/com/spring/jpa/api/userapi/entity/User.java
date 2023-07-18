@@ -11,9 +11,7 @@ import java.time.LocalDateTime;
 @Getter
 @ToString @EqualsAndHashCode(of = "id")
 @NoArgsConstructor @AllArgsConstructor
-@Builder
-
-@Entity
+@Builder @Entity
 @Table(name = "user") //테이블 명 검수 부탁드립니다.
 public class User {
 
