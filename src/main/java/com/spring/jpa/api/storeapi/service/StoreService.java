@@ -1,10 +1,13 @@
 package com.spring.jpa.api.storeapi.service;
 
+import com.spring.jpa.api.storeapi.dto.request.ProductRequestDTO;
+import com.spring.jpa.api.storeapi.dto.response.ProductResponseDTO;
+import com.spring.jpa.api.storeapi.dto.response.ProductsListResponseDTO;
 import com.spring.jpa.api.storeapi.entity.Basket;
 import com.spring.jpa.api.storeapi.entity.Product;
-import com.spring.jpa.api.storeapi.entity.ProductHistory;
 import com.spring.jpa.api.storeapi.repository.BasketRepository;
 import com.spring.jpa.api.storeapi.repository.ProductRepository;
+import com.spring.jpa.auth.TokenUserInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -12,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -20,7 +24,23 @@ import java.util.NoSuchElementException;
 public class StoreService {
 
     private final BasketRepository basketRepository;
-    private final ProductRepository ProductRepository;
+    private final ProductRepository productRepository;
+
+    public ProductsListResponseDTO retrieve(String userEmail) {
+        // 로그인 한 유저의 정보 데이터베이스에서 조회
+        Basket email = getBasket(userEmail);
+
+        List<Product> entityList = productRepository.findProducts(email);
+
+        List<ProductResponseDTO> dtoList = entityList.stream()
+                /*.map(todo -> new TodoDetailResponseDTO(todo))*/
+                .map(ProductResponseDTO::new)
+                .collect(Collectors.toList());
+
+        return ProductsListResponseDTO.builder()
+                .products(dtoList)
+                .build();
+    }
 
     public Basket getBasket(String email) {
         return basketRepository.findUser(email)
@@ -28,15 +48,28 @@ public class StoreService {
     }
 
     public List<Product> getProducts(Basket email) {
-        return ProductRepository.findProducts(email);
+        return productRepository.findProducts(email);
     }
 
-    public void deleteProduct(Basket email, String productName) {
-        ProductRepository.deleteProduct(email, productName);
+    public ProductsListResponseDTO delete(final String email, String userEmail) {
+        productRepository.deleteById(email);
+        return retrieve(userEmail);
     }
 
-//    public void insertProductHistory(ProductHistory productName, ProductHistory inventoryCount) {
-//        ProductHistoryRepository.insertProductHistory(productName, inventoryCount);
-//    }
+    public ProductsListResponseDTO create(
+            final ProductRequestDTO requestDTO,
+            final TokenUserInfo userInfo
+    )
+            throws RuntimeException, IllegalStateException {
+
+        Basket foundUser = getBasket(userInfo.getEmail());
+
+        Product product = requestDTO.toEntity(foundUser);
+
+        productRepository.save(product);
+        log.info("장바구니 추가 완료! 물품: {}", requestDTO.getProductName());
+        return retrieve(userInfo.getEmail());
+    }
+
 
 }

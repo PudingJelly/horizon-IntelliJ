@@ -1,28 +1,18 @@
 package com.spring.jpa.api.userapi.api;
 
 import com.spring.jpa.api.userapi.dto.request.LoginRequestDTO;
-import com.spring.jpa.auth.TokenUserInfo;
 import com.spring.jpa.utils.exception.DuplicatedEmailException;
 import com.spring.jpa.utils.exception.NoRegisteredArgumentsException;
 import com.spring.jpa.api.userapi.dto.UserSignUpResponseDTO;
-import com.spring.jpa.api.userapi.dto.request.LoginRequestDTO;
 import com.spring.jpa.api.userapi.dto.request.UserRequestSignUpDTO;
 import com.spring.jpa.api.userapi.dto.response.LoginResponseDTO;
 import com.spring.jpa.api.userapi.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.File;
-import java.io.IOException;
-
 
 @RestController
 @Slf4j
@@ -31,85 +21,84 @@ import java.io.IOException;
 @CrossOrigin
 public class UserController {
 
-//    private final UserService userService;
-//
-//    //이메일 중복 확인 요청 처리
-//    //GET: /api/auth/check?email=zzzz@xxx.com
-//    @GetMapping("/check")
-//    public ResponseEntity<?> check(String email) {
-//        if(email.trim().equals("")) {
-//            return ResponseEntity.badRequest()
-//                    .body("이메일이 없습니다!");
-//        }
-//        boolean resultFlag = userService.isDuplicate(email);
-//        log.info("{} 중복?? - {}", email, resultFlag);
-//
-//        return ResponseEntity.ok().body(resultFlag);
-//    }
-//
-//    //회원 가입 요청 처리
-//    //POST: /api/auth
-//    @PostMapping
-//    public ResponseEntity<?> signup(
-//            @Validated @RequestPart("user") UserRequestSignUpDTO dto,
-//            @RequestPart(value = "profileImage", required = false) MultipartFile profileImg,
-//            BindingResult result
-//    ) {
-//        log.info("/api/auth POST - {}", dto);
-//
-//        if(result.hasErrors()) {
-//            log.warn(result.toString());
-//            return ResponseEntity.badRequest()
-//                    .body(result.getFieldError());
-//        }
-//
-//        try {
-//
+    private final UserService userService;
+
+    //이메일 중복 확인 요청 처리
+    //GET: /api/auth/check?email=zzzz@xxx.com
+    @GetMapping("/check")
+    public ResponseEntity<?> check(String email) {
+        if(email.trim().equals("")) {
+            return ResponseEntity.badRequest()
+                    .body("이메일이 없습니다!");
+        }
+        boolean resultFlag = userService.isDuplicate(email);
+        log.info("{} 중복?? - {}", email, resultFlag);
+
+        return ResponseEntity.ok().body(resultFlag);
+    }
+
+    //회원 가입 요청 처리
+    //POST: /api/auth
+    @PostMapping
+    public ResponseEntity<?> signup(
+            @Validated UserRequestSignUpDTO dto,
+            //@RequestPart(value = "profileImage", required = false) MultipartFile profileImg,
+            BindingResult result
+    ) {
+        log.info("/api/auth POST - {}", dto);
+
+        if(result.hasErrors()) {
+            log.warn(result.toString());
+            return ResponseEntity.badRequest()
+                    .body(result.getFieldError());
+        }
+
+        try {
+
 //            String uploadedFilePath = null;
 //            if(profileImg != null) {
 //                log.info("attached file name: {}", profileImg.getOriginalFilename());
 //                uploadedFilePath = userService.uploadProfileImage(profileImg);
 //            }
-//
-//
-//            UserSignUpResponseDTO responseDTO = userService.create(dto, uploadedFilePath);
-//            return ResponseEntity.ok()
-//                    .body(responseDTO);
-//
-//        } catch (NoRegisteredArgumentsException e) {
-//            log.warn("필수 가입 정보를 전달받지 못했습니다.");
-//            return ResponseEntity.badRequest()
-//                    .body(e.getMessage());
-//        } catch (DuplicatedEmailException e) {
-//            log.warn("이메일이 중복되었습니다.");
-//            return ResponseEntity.badRequest()
-//                    .body(e.getMessage());
-//        } catch (Exception e) {
-//            log.warn("기타 예외가 발생했습니다.");
-//            e.printStackTrace();
-//            return ResponseEntity.internalServerError().build();
-//        }
-//    }
-//
-//    //로그인 요청 처리
-//    @PostMapping("/signin")
-//    public ResponseEntity<?> signIn(
-//            @Validated @RequestBody LoginRequestDTO dto
-//    ) {
-//        try {
-//            LoginResponseDTO responseDTO
-//                    = userService.authenticate(dto);
-//
-//            return ResponseEntity.ok().body(responseDTO);
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return ResponseEntity.badRequest()
-//                    .body(e.getMessage());
-//        }
-//    }
-//
-//    // 일반 회원을 프리미엄 회원으로 승격하는 요청 처리
+
+            UserSignUpResponseDTO responseDTO = userService.create(dto);
+            return ResponseEntity.ok()
+                    .body(responseDTO);
+
+        } catch (NoRegisteredArgumentsException e) {
+            log.warn("필수 가입 정보를 전달받지 못했습니다.");
+            return ResponseEntity.badRequest()
+                    .body(e.getMessage());
+        } catch (DuplicatedEmailException e) {
+            log.warn("이메일이 중복되었습니다.");
+            return ResponseEntity.badRequest()
+                    .body(e.getMessage());
+        } catch (Exception e) {
+            log.warn("기타 예외가 발생했습니다.");
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+
+    //로그인 요청 처리
+    @PostMapping("/signin")
+    public ResponseEntity<?> signIn(
+            @Validated @RequestBody LoginRequestDTO dto
+    ) {
+        try {
+            LoginResponseDTO responseDTO
+                    = userService.authenticate(dto);
+
+            return ResponseEntity.ok().body(responseDTO);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest()
+                    .body(e.getMessage());
+        }
+    }
+
+    // 일반 회원을 프리미엄 회원으로 승격하는 요청 처리
 //    @PutMapping("/promote")
 //    // 권한 검사 (해당 권한이 아니라면 인가처리 거부 403 코드 리턴)
 //    @PreAuthorize("hasRole('ROLE_COMMON')")
@@ -133,7 +122,7 @@ public class UserController {
 //        }
 //
 //    }
-//
+
 //    // 프로필 사진 이미지 데이터를 클라이언트에게 응답 처리
 //    @GetMapping("/load-profile")
 //    public ResponseEntity<?> loadFile(
@@ -197,8 +186,8 @@ public class UserController {
 //        }
 //
 //    }
-//
-//    // S3에서 불러온 프로필 사진 처리
+
+    // S3에서 불러온 프로필 사진 처리
 //    @GetMapping("/load-s3")
 //    public ResponseEntity<?> loadS3(
 //            @AuthenticationPrincipal TokenUserInfo userInfo
