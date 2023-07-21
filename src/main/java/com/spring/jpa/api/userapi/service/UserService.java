@@ -14,10 +14,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.util.UUID;
 
 @Service
 @Slf4j
@@ -34,7 +30,6 @@ public class UserService {
     //회원 가입 처리
     public UserSignUpResponseDTO create(
             final UserRequestSignUpDTO dto
-            //final String uploadedFilePath
     )
             throws RuntimeException {
 
@@ -91,51 +86,5 @@ public class UserService {
 
         return new LoginResponseDTO(user, token);
     }
-
-
-    //프리미엄으로 등급 업
-    public LoginResponseDTO promoteToPremium(TokenUserInfo userInfo)
-            throws NoRegisteredArgumentsException, IllegalStateException
-    {
-
-        User foundUser = userRepository
-                .findById(userInfo.getEmail())
-                .orElseThrow(
-                        () -> new NoRegisteredArgumentsException("회원 조회에 실패!")
-                );
-        User saved = userRepository.save(foundUser);
-
-        // 토큰을 재발급
-        String token = tokenProvider.createToken(saved);
-
-        return new LoginResponseDTO(saved, token);
-    }
-
-    /**
-     * 업로드된 파일을 서버에 저장하고 저장 경로를 리턴
-     * @param originalFile - 업로드 된 파일의 정보
-     * @return 실제로 저장된 이미지 경로
-     */
-
-//    public String uploadProfileImage(MultipartFile originalFile) throws IOException {
-//
-//        //루트 디렉토리가 존재하는 지 확인 후 존재하지 않으면 생성
-////        File rootDir = new File(uploadRootPath);
-////        if (!rootDir.exists()) rootDir.mkdir();
-//
-//        // 파일명을 유니크하게 변경
-//        String uniqueFileName = UUID.randomUUID()
-//                + "_" + originalFile.getOriginalFilename();
-//
-//        // 파일을 저장
-//        File uploadFile = new File(uploadRootPath + "/" + uniqueFileName);
-//        originalFile.transferTo(uploadFile);
-//
-//        // 파일을 S3 버킷에 저장
-//        String uploadUrl
-//                = s3Service.uploadToS3Bucket (originalFile.getBytes(), uniqueFileName);
-//
-//        return uploadUrl;
-//    }
 
 }
