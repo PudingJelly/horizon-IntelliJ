@@ -9,16 +9,16 @@ import javax.persistence.*;
 @NoArgsConstructor @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "shop_product")
+@Table(name = "user_product")
 public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "product_id")
-    private Long id; // 물품 고유 아이디 (숫자)
+    private Long id;
 
+    @Column(name = "product_name")
     private String productName; // 물품 이름
-    private String productContent; // 물품 설명
     private int inventoryCount; // 물품 개수
 
     @ManyToOne(fetch = FetchType.LAZY)

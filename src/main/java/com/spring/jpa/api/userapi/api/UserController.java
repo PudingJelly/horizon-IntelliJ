@@ -1,5 +1,6 @@
 package com.spring.jpa.api.userapi.api;
 
+import com.spring.jpa.api.storeapi.service.StoreService;
 import com.spring.jpa.api.userapi.dto.request.LoginRequestDTO;
 import com.spring.jpa.utils.exception.DuplicatedEmailException;
 import com.spring.jpa.utils.exception.NoRegisteredArgumentsException;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
+    private final StoreService storeService;
 
     //이메일 중복 확인 요청 처리
     //GET: /api/auth/check?email=zzzz@xxx.com
@@ -42,7 +44,6 @@ public class UserController {
     @PostMapping
     public ResponseEntity<?> signup(
             @Validated UserRequestSignUpDTO dto,
-            //@RequestPart(value = "profileImage", required = false) MultipartFile profileImg,
             BindingResult result
     ) {
         log.info("/api/auth POST - {}", dto);
@@ -55,13 +56,10 @@ public class UserController {
 
         try {
 
-//            String uploadedFilePath = null;
-//            if(profileImg != null) {
-//                log.info("attached file name: {}", profileImg.getOriginalFilename());
-//                uploadedFilePath = userService.uploadProfileImage(profileImg);
-//            }
-
             UserSignUpResponseDTO responseDTO = userService.create(dto);
+
+            // 장바구니 생성
+            storeService.createBasket(dto);
             return ResponseEntity.ok()
                     .body(responseDTO);
 
@@ -83,7 +81,7 @@ public class UserController {
     //로그인 요청 처리
     @PostMapping("/signin")
     public ResponseEntity<?> signIn(
-            @Validated @RequestBody LoginRequestDTO dto
+            @RequestBody LoginRequestDTO dto
     ) {
         try {
             LoginResponseDTO responseDTO
@@ -97,111 +95,5 @@ public class UserController {
                     .body(e.getMessage());
         }
     }
-
-    // 일반 회원을 프리미엄 회원으로 승격하는 요청 처리
-//    @PutMapping("/promote")
-//    // 권한 검사 (해당 권한이 아니라면 인가처리 거부 403 코드 리턴)
-//    @PreAuthorize("hasRole('ROLE_COMMON')")
-//    public ResponseEntity<?> promote(
-//            @AuthenticationPrincipal TokenUserInfo userInfo
-//    ) {
-//        log.info("/api/auth/promote - PUT!");
-//
-//        try {
-//            LoginResponseDTO responseDTO
-//                    = userService.promoteToPremium(userInfo);
-//            return ResponseEntity.ok()
-//                    .body(responseDTO);
-//        } catch (IllegalStateException | NoRegisteredArgumentsException e) {
-//            e.printStackTrace();
-//            log.warn(e.getMessage());
-//            return ResponseEntity.badRequest()
-//                    .body(e.getMessage());
-//        } catch (Exception e) {
-//            return ResponseEntity.internalServerError().build();
-//        }
-//
-//    }
-
-//    // 프로필 사진 이미지 데이터를 클라이언트에게 응답 처리
-//    @GetMapping("/load-profile")
-//    public ResponseEntity<?> loadFile(
-//            @AuthenticationPrincipal TokenUserInfo userInfo
-//    ) {
-//        log.info("/api/auth/load-profile - GET!, user: {}", userInfo.getEmail());
-//
-//        try {
-//            //클라이언트가 요청한 프로필 사진을 응답해야 함.
-//            //1. 프로필 사진의 경로를 얻어야 함.
-//            String filePath
-//                    = userService.findProfilePath(userInfo.getUserId());
-//
-//            //2. 얻어낸 파일 경로를 통해서 실제 파일 데이터 로드하기
-//            File profileFile = new File(filePath);
-//
-//            if (!profileFile.exists()) {
-//                return ResponseEntity.notFound().build();
-//            }
-//
-//            // 해당 경로에 저장된 파일을 바이트배열로 직렬화 해서 리턴
-//            byte[] fileData = FileCopyUtils.copyToByteArray(profileFile);
-//
-//            //3. 응답 헤더에 컨턴츠 타입을 설정.
-//            HttpHeaders headers = new HttpHeaders();
-//            MediaType contentType = findExtensionAndGetMediaType(filePath);
-//            if(contentType == null) {
-//                return ResponseEntity.internalServerError()
-//                        .body("발견된 파일은 이미지 파일이 아닙니다.");
-//            }
-//            headers.setContentType(contentType);
-//
-//            return ResponseEntity.ok()
-//                    .headers(headers)
-//                    .body(fileData);
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return ResponseEntity.internalServerError()
-//                    .body("파일을 찾을 수 없습니다.");
-//        }
-//
-//    }
-//
-//    private MediaType findExtensionAndGetMediaType(String filePath) {
-//
-//        // 파일 경로에서 확장자 추출하기
-//        // C:/todo_upload/asjkldlkaslkdjc_abc.jpg
-//        String ext
-//                = filePath.substring(filePath.lastIndexOf(".") + 1);
-//
-//        switch (ext.toUpperCase()) {
-//            case "JPG": case "JPEG":
-//                return MediaType.IMAGE_JPEG;
-//            case "PNG":
-//                return MediaType.IMAGE_PNG;
-//            case "GIF":
-//                return MediaType.IMAGE_GIF;
-//            default:
-//                return null;
-//        }
-//
-//    }
-
-    // S3에서 불러온 프로필 사진 처리
-//    @GetMapping("/load-s3")
-//    public ResponseEntity<?> loadS3(
-//            @AuthenticationPrincipal TokenUserInfo userInfo
-//    ) {
-//        log.info("/api/auth/load-s3 GET - user: {}", userInfo);
-//
-//        try {
-//            String profilePath = userService.findProfilePath(userInfo.getUserId());
-//            return ResponseEntity.ok().body(profilePath);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return ResponseEntity.badRequest().body(e.getMessage());
-//        }
-//
-//    }
 
 }
