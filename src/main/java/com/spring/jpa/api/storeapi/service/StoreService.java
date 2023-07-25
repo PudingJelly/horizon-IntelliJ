@@ -1,16 +1,16 @@
 package com.spring.jpa.api.storeapi.service;
 
 import com.spring.jpa.api.storeapi.dto.request.BasketRequestDTO;
+import com.spring.jpa.api.storeapi.dto.request.ProductHistoryRequestDTO;
 import com.spring.jpa.api.storeapi.dto.request.ProductRequestDTO;
 import com.spring.jpa.api.storeapi.dto.request.ProductDetailRequestDTO;
-import com.spring.jpa.api.storeapi.dto.response.BasketResponseDTO;
-import com.spring.jpa.api.storeapi.dto.response.ProductResponseDTO;
-import com.spring.jpa.api.storeapi.dto.response.ProductsListResponseDTO;
-import com.spring.jpa.api.storeapi.dto.response.ProductDetailResponseDTO;
+import com.spring.jpa.api.storeapi.dto.response.*;
 import com.spring.jpa.api.storeapi.entity.Basket;
 import com.spring.jpa.api.storeapi.entity.Product;
 import com.spring.jpa.api.storeapi.entity.ProductDetail;
+import com.spring.jpa.api.storeapi.entity.ProductHistory;
 import com.spring.jpa.api.storeapi.repository.BasketRepository;
+import com.spring.jpa.api.storeapi.repository.ProductHistoryRepository;
 import com.spring.jpa.api.storeapi.repository.ProductRepository;
 import com.spring.jpa.api.storeapi.repository.ProductDetailRepository;
 import com.spring.jpa.api.userapi.dto.request.UserRequestSignUpDTO;
@@ -34,6 +34,7 @@ public class StoreService {
     private final BasketRepository basketRepository;
     private final ProductRepository productRepository;
     private final ProductDetailRepository productsRepository;
+    private final ProductHistoryRepository productHistoryRepository;
 
     public void createBasket( @Validated UserRequestSignUpDTO dto) {
         String email = dto.getEmail();
@@ -51,21 +52,33 @@ public class StoreService {
 
     }
 
-    public void createProducts() {}
-
     public ProductsListResponseDTO retrieve(String userEmail) {
         // 로그인 한 유저의 정보 데이터베이스에서 조회
         Basket email = getBasket(userEmail);
 
         List<Product> entityList = productRepository.findProducts(email);
 
-        List<ProductResponseDTO> dtoList = entityList.stream()
-                /*.map(todo -> new TodoDetailResponseDTO(todo))*/
+        List<ProductResponseDTO> productsList = entityList.stream()
                 .map(ProductResponseDTO::new)
                 .collect(Collectors.toList());
 
         return ProductsListResponseDTO.builder()
-                .products(dtoList)
+                .products(productsList)
+                .build();
+    }
+
+    public ProductHistoryListResponseDTO historyRetrieve(String userEmail) {
+        // 로그인 한 유저의 정보 데이터베이스에서 조회
+        Basket email = getBasket(userEmail);
+
+        List<ProductHistory> entityList = productHistoryRepository.findProducts(email);
+
+        List<ProductHistoryResponseDTO> productsList = entityList.stream()
+                .map(ProductHistoryResponseDTO::new)
+                .collect(Collectors.toList());
+
+        return ProductHistoryListResponseDTO.builder()
+                .products(productsList)
                 .build();
     }
 
@@ -78,8 +91,8 @@ public class StoreService {
         return productRepository.findProducts(email);
     }
 
-    public ProductsListResponseDTO delete(final String email, String userEmail) {
-        productRepository.deleteById(email);
+    public ProductsListResponseDTO delete(final Long productId, String userEmail) {
+        productRepository.deleteById(productId);
         return retrieve(userEmail);
     }
 
@@ -94,8 +107,21 @@ public class StoreService {
         Product product = requestDTO.toEntity(foundUser);
 
         productRepository.save(product);
-        log.info("장바구니 추가 완료! 물품: {}", requestDTO.getProductName());
         return retrieve(userInfo.getEmail());
+    }
+
+
+    public ProductHistoryListResponseDTO historyCreate(
+            ProductHistoryRequestDTO requestDTO,
+            TokenUserInfo userInfo
+    ) throws RuntimeException, IllegalStateException {
+
+        Basket foundUser = getBasket(userInfo.getEmail());
+
+        ProductHistory product = requestDTO.toEntity(foundUser);
+
+        productHistoryRepository.save(product);
+        return historyRetrieve(userInfo.getEmail());
     }
 
 
@@ -106,4 +132,5 @@ public class StoreService {
 
         return new ProductDetailResponseDTO(saved);
     }
+
 }

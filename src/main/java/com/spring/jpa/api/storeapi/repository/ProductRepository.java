@@ -10,11 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 @SpringBootApplication
-public interface ProductRepository extends JpaRepository<Product, String> {
+public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT p FROM Product p WHERE p.email = :email")
     List<Product> findProducts(Basket email);
-
-//    @Modifying
-//    @Query("DELETE FROM Product p WHERE p.email = :email AND p.productName = :productName")
-//    void deleteProduct(Basket email, String productName);
 }
