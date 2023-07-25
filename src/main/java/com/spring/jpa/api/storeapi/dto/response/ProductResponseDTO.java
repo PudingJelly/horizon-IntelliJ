@@ -16,7 +16,7 @@ public class ProductResponseDTO {
 
     public ProductResponseDTO(Product product) {
         this.id = product.getId();
-        this.name = product.getProductName();
+        this.name = product.getName();
         this.count = product.getCount();
     }
 

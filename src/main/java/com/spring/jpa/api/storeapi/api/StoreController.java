@@ -1,15 +1,18 @@
 package com.spring.jpa.api.storeapi.api;
 
 import com.spring.jpa.api.storeapi.dto.request.ProductHistoryRequestDTO;
+import com.spring.jpa.api.storeapi.dto.request.ProductModifyRequestDTO;
 import com.spring.jpa.api.storeapi.dto.request.ProductRequestDTO;
 import com.spring.jpa.api.storeapi.dto.request.ProductDetailRequestDTO;
 import com.spring.jpa.api.storeapi.dto.response.ProductHistoryListResponseDTO;
 import com.spring.jpa.api.storeapi.dto.response.ProductsListResponseDTO;
 import com.spring.jpa.api.storeapi.dto.response.ProductDetailResponseDTO;
+import com.spring.jpa.api.storeapi.entity.Product;
 import com.spring.jpa.api.storeapi.service.StoreService;
 import com.spring.jpa.auth.TokenUserInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -30,10 +33,21 @@ public class StoreController {
             @AuthenticationPrincipal TokenUserInfo userInfo,
             @RequestBody ProductRequestDTO requestDTO
     ) {
-            ProductsListResponseDTO responseDTO = storeService.create(requestDTO, userInfo);
+
+        ProductsListResponseDTO responseDTO = storeService.create(requestDTO, userInfo);
+
+        // 중복 물품 이름 체크
+        if (responseDTO.containsDuplicateNames()) {
+            // 중복이 있을 경우, 여기에 처리 방법을 적어줍니다.
+            // 예를 들어, ResponseEntity를 사용하여 에러 응답을 보낼 수 있습니다.
             return ResponseEntity
-                    .ok()
-                    .body(responseDTO);
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body("중복된 물품 이름이 있습니다.");
+        }
+
+        return ResponseEntity
+                .ok()
+                .body(responseDTO);
     }
 
     // 히스토리에 물품추가
@@ -76,6 +90,16 @@ public class StoreController {
             @AuthenticationPrincipal TokenUserInfo userInfo
     ){
         ProductsListResponseDTO responseDTO = storeService.retrieve(userInfo.getEmail());
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @RequestMapping(method = {RequestMethod.PUT, RequestMethod.PATCH})
+    public ResponseEntity<?> updateCount(
+            @AuthenticationPrincipal TokenUserInfo userInfo,
+            @RequestBody ProductModifyRequestDTO requestDTO
+    ) {
+
+        ProductsListResponseDTO responseDTO = storeService.update(requestDTO, userInfo.getEmail());
         return ResponseEntity.ok().body(responseDTO);
     }
 

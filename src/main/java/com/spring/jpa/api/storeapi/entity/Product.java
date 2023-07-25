@@ -18,7 +18,7 @@ public class Product {
     private Long id;
 
     @Column(name = "product_name")
-    private String productName; // 물품 이름
+    private String name; // 물품 이름
 
     @Column(name = "product_count")
     private int count; // 물품 개수

@@ -17,14 +17,14 @@ public class ProductRequestDTO {
 
     public Product toEntity() {
         return Product.builder()
-                .productName(this.name)
+                .name(this.name)
                 .count(this.count)
                 .build();
     }
 
     public Product toEntity(Basket email) {
         return Product.builder()
-                .productName(this.name)
+                .name(this.name)
                 .count(this.count)
                 .email(email)
                 .build();
