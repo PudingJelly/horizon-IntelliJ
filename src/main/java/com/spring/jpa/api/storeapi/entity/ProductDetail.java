@@ -24,10 +24,13 @@ public class ProductDetail {
 
     private String productContent; // 물품 설명
 
+    private int price; //물품 가격
+
     // 생성자 추가
-    public ProductDetail(String productName, String productContent) {
+    public ProductDetail(String productName, String productContent, int price) {
         this.productName = productName;
         this.productContent = productContent;
+        this.price = price;
     }
 
 }

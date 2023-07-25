@@ -15,10 +15,14 @@ public class ProductDetailRequestDTO {
     @NotBlank
     private String productContent; // 물품 설명
 
+    @NotBlank
+    private int price;
+
     public ProductDetail toEntity() {
         return ProductDetail.builder()
                 .productName(this.productName)
                 .productContent(this.productContent)
+                .price(this.price)
                 .build();
     }
 
