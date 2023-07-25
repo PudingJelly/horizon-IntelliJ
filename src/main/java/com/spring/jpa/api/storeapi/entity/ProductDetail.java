@@ -6,7 +6,7 @@ import lombok.*;
 
 import javax.persistence.*;
 
-@Getter @Setter @ToString(exclude = "productName")
+@Getter @Setter @ToString(exclude = "name")
 @EqualsAndHashCode
 @NoArgsConstructor @AllArgsConstructor
 @Builder
@@ -20,16 +20,18 @@ public class ProductDetail {
     private Long id;
 
     @Column(name = "product_name")
-    private String productName;
+    private String name;
 
-    private String productContent; // 물품 설명
+    @Column(name = "product_content")
+    private String content; // 물품 설명
 
+    @Column(name = "product_price")
     private int price; //물품 가격
 
     // 생성자 추가
     public ProductDetail(String productName, String productContent, int price) {
-        this.productName = productName;
-        this.productContent = productContent;
+        this.name = productName;
+        this.content = productContent;
         this.price = price;
     }
 
