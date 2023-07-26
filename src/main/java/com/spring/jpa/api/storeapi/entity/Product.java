@@ -17,8 +17,9 @@ public class Product {
     @Column(name = "product_id")
     private Long id;
 
-    @Column(name = "product_name")
-    private String name; // 물품 이름
+    @OneToOne
+    @JoinColumn(name = "product_name", referencedColumnName = "product_name")
+    private ProductDetail name; // 물품 이름
 
     @Column(name = "product_count")
     private int count; // 물품 개수

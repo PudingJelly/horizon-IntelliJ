@@ -11,7 +11,7 @@ import lombok.*;
 @Builder
 public class ProductRequestDTO {
 
-    private String name; // 물품 이름
+    private ProductDetail name; // 물품 이름
     private int count; // 물품 개수
     private Basket email; // 장바구니와 조인할 사용자 이메일
 

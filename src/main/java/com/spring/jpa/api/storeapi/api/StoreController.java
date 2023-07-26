@@ -49,7 +49,7 @@ public class StoreController {
 
         for (
                 ProductResponseDTO product : responseDTO.getProducts()) {
-            String productName = product.getName();
+            ProductDetail productName = product.getName();
             // 중복 물품 이름 체크
             if (requestDTO.getName().equals(productName)) {
                 // 중복이 있을 경우, 여기에 처리 방법을 적어줍니다.

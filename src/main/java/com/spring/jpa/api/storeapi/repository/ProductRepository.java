@@ -12,7 +12,7 @@ import java.util.List;
 
 @SpringBootApplication
 public interface ProductRepository extends JpaRepository<Product, Long> {
-    @Query("SELECT p FROM Product p WHERE p.email = :email")
+    @Query("SELECT p FROM Product p JOIN p.name d WHERE p.email = :email")
     List<Product> findProducts(Basket email);
 
 }

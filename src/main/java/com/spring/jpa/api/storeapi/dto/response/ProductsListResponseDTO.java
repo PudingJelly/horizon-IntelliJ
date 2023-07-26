@@ -19,7 +19,7 @@ public class ProductsListResponseDTO {
     public boolean containsDuplicateNames() {
         Set<String> nameSet = new HashSet<>();
         for (ProductResponseDTO product : products) {
-            if (!nameSet.add(product.getName())) {
+            if (!nameSet.add(String.valueOf(product.getName()))) {
                 return true;
             }
         }
