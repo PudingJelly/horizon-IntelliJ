@@ -2,6 +2,7 @@ package com.spring.jpa.api.storeapi.repository;
 
 import com.spring.jpa.api.storeapi.entity.Basket;
 import com.spring.jpa.api.storeapi.entity.Product;
+import com.spring.jpa.api.storeapi.entity.ProductDetail;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -13,4 +14,5 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT p FROM Product p WHERE p.email = :email")
     List<Product> findProducts(Basket email);
+
 }

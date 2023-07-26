@@ -33,7 +33,9 @@ public class StoreService {
     private final ProductRepository productRepository;
     private final ProductDetailRepository productsRepository;
     private final ProductHistoryRepository productHistoryRepository;
+    private final ProductDetailRepository productDetailRepository;
 
+    //장바구니 생성
     public void createBasket( @Validated UserRequestSignUpDTO dto) {
         String email = dto.getEmail();
         String name = dto.getUserName();
@@ -144,6 +146,12 @@ public class StoreService {
         });
 
         return retrieve(email);
+
+    }
+
+    public List<ProductDetail> getList() {
+
+        return productDetailRepository.findList();
 
     }
 }
