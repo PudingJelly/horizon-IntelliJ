@@ -44,6 +44,7 @@ public class WebSecurityConfig {
                 .antMatchers(HttpMethod.PUT, "/api/auth/promote").permitAll() // 인증 없이 접근 가능
                 .antMatchers("/api/auth/load-profile").permitAll() // 인증 없이 접근 가능
                 .antMatchers("/", "/api/auth/**").permitAll()
+                .antMatchers("/", "/shop/list").permitAll()
                 .antMatchers(HttpMethod.POST, "/shop/product").permitAll()
                 .anyRequest().authenticated();
 

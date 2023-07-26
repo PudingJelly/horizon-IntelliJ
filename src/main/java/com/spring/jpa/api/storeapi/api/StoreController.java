@@ -1,18 +1,24 @@
 package com.spring.jpa.api.storeapi.api;
 
 import com.spring.jpa.api.storeapi.dto.request.ProductHistoryRequestDTO;
+import com.spring.jpa.api.storeapi.dto.request.ProductModifyRequestDTO;
 import com.spring.jpa.api.storeapi.dto.request.ProductRequestDTO;
 import com.spring.jpa.api.storeapi.dto.request.ProductDetailRequestDTO;
 import com.spring.jpa.api.storeapi.dto.response.ProductHistoryListResponseDTO;
+import com.spring.jpa.api.storeapi.dto.response.ProductResponseDTO;
 import com.spring.jpa.api.storeapi.dto.response.ProductsListResponseDTO;
 import com.spring.jpa.api.storeapi.dto.response.ProductDetailResponseDTO;
+import com.spring.jpa.api.storeapi.entity.ProductDetail;
 import com.spring.jpa.api.storeapi.service.StoreService;
 import com.spring.jpa.auth.TokenUserInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @Slf4j
@@ -24,6 +30,13 @@ public class StoreController {
 
     private final StoreService storeService;
 
+    //물품 list
+    @GetMapping("/list")
+    public  ResponseEntity<?> getList() {
+        List<ProductDetail> responseDTO = storeService.getList();
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
     // 장바구니에 물품추가
     @PostMapping
     public ResponseEntity<?> createProducts(
@@ -31,6 +44,20 @@ public class StoreController {
             @RequestBody ProductRequestDTO requestDTO
     ) {
             ProductsListResponseDTO responseDTO = storeService.create(requestDTO, userInfo);
+
+            for (
+                    ProductResponseDTO product : responseDTO.getProducts()) {
+                String productName = product.getName();
+            // 중복 물품 이름 체크
+            if(responseDTO.containsDuplicateNames()) {
+                return ResponseEntity
+                        .status(HttpStatus.BAD_REQUEST)
+                        .body("중복된 물품 이름이 있습니다.");
+                }
+            }
+
+            ProductsListResponseDTO create = storeService.create(requestDTO, userInfo);
+
             return ResponseEntity
                     .ok()
                     .body(responseDTO);
@@ -79,7 +106,15 @@ public class StoreController {
         return ResponseEntity.ok().body(responseDTO);
     }
 
+    @RequestMapping(method = {RequestMethod.PUT, RequestMethod.PATCH})
+    public ResponseEntity<?> updateCount(
+            @AuthenticationPrincipal TokenUserInfo userInfo,
+            @RequestBody ProductModifyRequestDTO requestDTO
+    ) {
 
+        ProductsListResponseDTO responseDTO = storeService.update(requestDTO, userInfo.getEmail());
+        return ResponseEntity.ok().body(responseDTO);
+    }
 
 
 }
