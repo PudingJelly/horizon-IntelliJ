@@ -11,12 +11,12 @@ import lombok.*;
 public class ProductResponseDTO {
 
     private Long id;
-    private String name; // 물품 이름
+    private ProductDetail name; // 물품 이름
     private int count; // 물품 개수
 
     public ProductResponseDTO(Product product) {
         this.id = product.getId();
-        this.name = product.getProductName();
+        this.name = product.getName();
         this.count = product.getCount();
     }
 

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Getter @Setter @ToString(exclude = "name")
 @EqualsAndHashCode
@@ -12,7 +13,7 @@ import javax.persistence.*;
 @Builder
 @Entity
 @Table(name = "product_detail")
-public class ProductDetail {
+public class ProductDetail implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

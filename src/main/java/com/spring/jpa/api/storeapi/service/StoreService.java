@@ -1,9 +1,6 @@
 package com.spring.jpa.api.storeapi.service;
 
-import com.spring.jpa.api.storeapi.dto.request.BasketRequestDTO;
-import com.spring.jpa.api.storeapi.dto.request.ProductHistoryRequestDTO;
-import com.spring.jpa.api.storeapi.dto.request.ProductRequestDTO;
-import com.spring.jpa.api.storeapi.dto.request.ProductDetailRequestDTO;
+import com.spring.jpa.api.storeapi.dto.request.*;
 import com.spring.jpa.api.storeapi.dto.response.*;
 import com.spring.jpa.api.storeapi.entity.Basket;
 import com.spring.jpa.api.storeapi.entity.Product;
@@ -23,6 +20,7 @@ import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,7 +33,9 @@ public class StoreService {
     private final ProductRepository productRepository;
     private final ProductDetailRepository productsRepository;
     private final ProductHistoryRepository productHistoryRepository;
+    private final ProductDetailRepository productDetailRepository;
 
+    //장바구니 생성
     public void createBasket( @Validated UserRequestSignUpDTO dto) {
         String email = dto.getEmail();
         String name = dto.getUserName();
@@ -133,4 +133,25 @@ public class StoreService {
         return new ProductDetailResponseDTO(saved);
     }
 
+    // 장바구니에서 물품 개수 변경
+    public ProductsListResponseDTO update(final ProductModifyRequestDTO requestDTO, String email) throws RuntimeException {
+
+        Optional<Product> targetEntity
+                = productRepository.findById(requestDTO.getId());
+
+        targetEntity.ifPresent(entity -> {
+            entity.setCount(requestDTO.getCount());
+
+            productRepository.save(entity);
+        });
+
+        return retrieve(email);
+
+    }
+
+    public List<ProductDetail> getList() {
+
+        return productDetailRepository.findList();
+
+    }
 }
