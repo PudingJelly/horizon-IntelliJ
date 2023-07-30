@@ -30,6 +30,11 @@ public class ProductDetail implements Serializable {
     private int price; //물품 가격
 
     // 생성자 추가
+
+    public ProductDetail(String name) {
+        this.name = name;
+    }
+
     public ProductDetail(String productName, String productContent, int price) {
         this.name = productName;
         this.content = productContent;

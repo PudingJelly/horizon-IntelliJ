@@ -96,17 +96,26 @@ public class StoreService {
         return retrieve(userEmail);
     }
 
-    public ProductsListResponseDTO create(
-            final ProductRequestDTO requestDTO,
-            final TokenUserInfo userInfo
-    )
-            throws RuntimeException, IllegalStateException {
-
+    public ProductsListResponseDTO create(ProductRequestDTO requestDTO, TokenUserInfo userInfo) {
         Basket foundUser = getBasket(userInfo.getEmail());
 
-        Product product = requestDTO.toEntity(foundUser);
+        String productName = requestDTO.getName().getName();
 
-        productRepository.save(product);
+        // "물품2"라는 이름의 ProductDetail 엔티티를 데이터베이스에서 찾아옴
+        ProductDetail productDetail = productDetailRepository.findByName(productName);
+
+        // 만약 "물품2"라는 이름의 ProductDetail 엔티티가 존재하지 않는다면 예외 처리 또는 새로운 엔티티를 생성해야 함
+
+        // 새로운 Product 엔티티 생성 및 설정
+        Product newProduct = new Product();
+        newProduct.setName(productDetail); // 찾은 ProductDetail 엔티티를 설정
+        newProduct.setCount(requestDTO.getCount());
+        newProduct.setEmail(foundUser);
+
+        // 생성한 Product 엔티티를 저장
+        productRepository.save(newProduct);
+
+        // 수정된 장바구니 정보를 가져와서 반환
         return retrieve(userInfo.getEmail());
     }
 
@@ -150,7 +159,6 @@ public class StoreService {
     }
 
     public List<ProductDetail> getList() {
-
         return productDetailRepository.findList();
 
     }

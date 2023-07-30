@@ -13,4 +13,7 @@ public interface ProductDetailRepository extends JpaRepository<ProductDetail, St
     @Query("SELECT d FROM ProductDetail d")
     List<ProductDetail> findList();
 
+    @Query("SELECT d FROM ProductDetail d WHERE d.name = :name")
+    ProductDetail findByName(String name);
+
 }
