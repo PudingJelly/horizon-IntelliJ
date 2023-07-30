@@ -17,7 +17,7 @@ public class Product {
     @Column(name = "product_id")
     private Long id;
 
-    @OneToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_name", referencedColumnName = "product_name")
     private ProductDetail name; // 물품 이름
 
