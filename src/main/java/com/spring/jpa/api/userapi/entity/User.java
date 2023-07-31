@@ -7,7 +7,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
-@Getter
+@Getter @Setter
 @ToString @EqualsAndHashCode(of = "email")
 @NoArgsConstructor @AllArgsConstructor
 @Builder @Entity
@@ -25,6 +25,18 @@ public class User {
     @NotNull
     @Column(nullable = false)
     private String userName;
+
+    @NotNull
+    @Column(nullable = false)
+    private int postCode;
+
+    @NotNull
+    @Column(nullable = false)
+    private String address1;
+
+    @NotNull
+    @Column(nullable = false)
+    private String address2;
 
     @CreationTimestamp
     private LocalDateTime joinDate;

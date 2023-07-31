@@ -2,18 +2,23 @@ package com.spring.jpa.api.userapi.api;
 
 import com.spring.jpa.api.storeapi.service.StoreService;
 import com.spring.jpa.api.userapi.dto.request.LoginRequestDTO;
+import com.spring.jpa.api.userapi.entity.User;
+import com.spring.jpa.auth.TokenUserInfo;
 import com.spring.jpa.utils.exception.DuplicatedEmailException;
 import com.spring.jpa.utils.exception.NoRegisteredArgumentsException;
-import com.spring.jpa.api.userapi.dto.UserSignUpResponseDTO;
+import com.spring.jpa.api.userapi.dto.response.UserSignUpResponseDTO;
 import com.spring.jpa.api.userapi.dto.request.UserRequestSignUpDTO;
 import com.spring.jpa.api.userapi.dto.response.LoginResponseDTO;
 import com.spring.jpa.api.userapi.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @Slf4j
@@ -96,4 +101,25 @@ public class UserController {
         }
     }
 
+    @GetMapping("/user")
+    public ResponseEntity<?> user(
+            @AuthenticationPrincipal TokenUserInfo userInfo
+    ) {
+        Optional<User> responseDTO = userService.getUser(userInfo.getEmail());
+
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    @RequestMapping(method = {RequestMethod.PUT, RequestMethod.PATCH})
+    public ResponseEntity<?> updateUser (
+            @AuthenticationPrincipal TokenUserInfo userInfo,
+            @RequestBody UserRequestSignUpDTO requestDTO
+    ) {
+        Optional<User> responseDTO = userService.update(requestDTO, userInfo.getEmail());
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+
+
 }
+
