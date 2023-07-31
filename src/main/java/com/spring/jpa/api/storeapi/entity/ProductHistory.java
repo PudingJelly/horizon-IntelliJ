@@ -25,6 +25,9 @@ public class ProductHistory {
     @Column(name = "product_count")
     private int count;
 
+    @Column(name = "product_price")
+    private int price;
+
     @CreationTimestamp
     private LocalDateTime buyDate;
 

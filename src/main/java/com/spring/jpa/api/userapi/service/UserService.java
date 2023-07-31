@@ -1,19 +1,20 @@
 package com.spring.jpa.api.userapi.service;
 
-import com.spring.jpa.api.userapi.dto.UserSignUpResponseDTO;
+import com.spring.jpa.api.userapi.dto.response.UserSignUpResponseDTO;
 import com.spring.jpa.api.userapi.dto.request.LoginRequestDTO;
 import com.spring.jpa.api.userapi.dto.request.UserRequestSignUpDTO;
 import com.spring.jpa.api.userapi.dto.response.LoginResponseDTO;
 import com.spring.jpa.api.userapi.entity.User;
 import com.spring.jpa.api.userapi.repository.UserRepository;
 import com.spring.jpa.auth.TokenProvider;
-import com.spring.jpa.auth.TokenUserInfo;
 import com.spring.jpa.utils.exception.DuplicatedEmailException;
 import com.spring.jpa.utils.exception.NoRegisteredArgumentsException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -87,4 +88,23 @@ public class UserService {
         return new LoginResponseDTO(user, token);
     }
 
+    public Optional<User> getUser(String email) {
+        return userRepository.findByEmail(email);
+
+    }
+
+    public Optional<User> update(final UserRequestSignUpDTO requestDTO, String email) {
+
+        Optional<User> targetEntity = userRepository.findByEmail(email);
+
+        targetEntity.ifPresent(entity -> {
+            entity.setPostCode(requestDTO.getPostCode());
+            entity.setAddress1(requestDTO.getAddress1());
+            entity.setAddress2(requestDTO.getAddress2());
+
+            userRepository.save(entity);
+        });
+
+        return getUser(email);
+    }
 }

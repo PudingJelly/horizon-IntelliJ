@@ -2,6 +2,7 @@ package com.spring.jpa.api.userapi.repository;
 
 import com.spring.jpa.api.userapi.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 
@@ -11,6 +12,7 @@ public interface UserRepository
     //쿼리 메서드
 
     // 이메일로 회원정보 조회
+    @Query("SELECT u FROM User u WHERE u.email = :email")
     Optional<User> findByEmail(String email);
 
     // 이메일 중복 체크
