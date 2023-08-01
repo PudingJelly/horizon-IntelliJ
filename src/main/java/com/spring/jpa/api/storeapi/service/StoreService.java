@@ -162,4 +162,9 @@ public class StoreService {
         return productDetailRepository.findList();
 
     }
+
+    public List<ProductHistory> getHistoryList(String email) {
+        Basket userEmail = getBasket(email);
+        return productHistoryRepository.findProducts(userEmail);
+    }
 }

@@ -22,7 +22,7 @@ public class UserRequestSignUpDTO {
     private String userName;
 
     @NotNull
-    private int postCode;
+    private String postCode;
 
     @NotBlank
     private String address1;

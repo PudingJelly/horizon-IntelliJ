@@ -10,6 +10,7 @@ import com.spring.jpa.api.storeapi.dto.response.ProductsListResponseDTO;
 import com.spring.jpa.api.storeapi.dto.response.ProductDetailResponseDTO;
 import com.spring.jpa.api.storeapi.entity.Product;
 import com.spring.jpa.api.storeapi.entity.ProductDetail;
+import com.spring.jpa.api.storeapi.entity.ProductHistory;
 import com.spring.jpa.api.storeapi.service.StoreService;
 import com.spring.jpa.auth.TokenUserInfo;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +36,15 @@ public class StoreController {
     @GetMapping("/list")
     public ResponseEntity<?> getList(){
         List<ProductDetail> responseDTO = storeService.getList();
+        return ResponseEntity.ok().body(responseDTO);
+    }
+
+    //결재 내역 list
+    @GetMapping("/historyList")
+    public ResponseEntity<?> getHistoryList(
+            @AuthenticationPrincipal TokenUserInfo userInfo
+    ){
+        List<ProductHistory> responseDTO = storeService.getHistoryList(userInfo.getEmail());
         return ResponseEntity.ok().body(responseDTO);
     }
 

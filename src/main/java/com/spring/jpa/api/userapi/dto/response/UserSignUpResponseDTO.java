@@ -15,7 +15,7 @@ public class UserSignUpResponseDTO {
 
     private String userName;
 
-    private int postCode;
+    private String postCode;
 
     private String address1;
 

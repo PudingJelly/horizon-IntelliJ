@@ -14,5 +14,4 @@ public interface ProductHistoryRepository extends JpaRepository<ProductHistory, 
 
     @Query("SELECT p FROM ProductHistory p WHERE p.email = :email")
     List<ProductHistory> findProducts(Basket email);
-
 }
