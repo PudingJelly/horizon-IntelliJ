@@ -23,7 +23,8 @@ public class ProductDetail implements Serializable {
     @Column(name = "product_name")
     private String name;
 
-    @Column(name = "product_content")
+
+    @Column(name = "product_content", length = 3000)
     private String content; // 물품 설명
 
     @Column(name = "product_price")

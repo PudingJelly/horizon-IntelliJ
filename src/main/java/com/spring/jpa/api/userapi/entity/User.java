@@ -28,7 +28,7 @@ public class User {
 
     @NotNull
     @Column(nullable = false)
-    private int postCode;
+    private String postCode;
 
     @NotNull
     @Column(nullable = false)

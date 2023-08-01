@@ -28,6 +28,9 @@ public class ProductHistory {
     @Column(name = "product_price")
     private int price;
 
+    private String address1;
+    private String address2;
+
     @CreationTimestamp
     private LocalDateTime buyDate;
 
